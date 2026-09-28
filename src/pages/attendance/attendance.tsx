@@ -5,7 +5,7 @@ import { TableDataRefetch, Modules } from "dhis2-semis-types"
 import { Table, useSchoolCalendarKey } from "dhis2-semis-components";
 import { ReasonOfAbsenseState } from '../../schema/attendance/disableAllBtns';
 import EnrollmentActionsButtons from "../../components/enrollmentButtons/EnrollmentActionsButtons";
-import { useCheckFilters, useHeader, useTableData, useUrlParams, useViewPortWidth } from "dhis2-semis-functions";
+import { sortTableRows, useCheckFilters, useHeader, useTableData, useTableSort, useUrlParams, useViewPortWidth } from "dhis2-semis-functions";
 import { tableDataFormatter } from '../../utils/table/tableDataFormatter';
 import InfoPageHolder from '../info/infoPage';
 import { TableDataState } from '../../schema/table/tableDataSchema';
@@ -35,8 +35,10 @@ export default function Attendance({ i18n, baseUrl }: { i18n: D2I18n, baseUrl: s
     const [attendanceHeaders, setattendanceHeaders] = useState<any>([])
     const [tableValues, setTableValues] = useRecoilState(TableDataState)
     const [seeReason, setSeeReason] = useRecoilState(ReasonOfAbsenseState)
-    const { getData, tableData, loading } = useTableData({ module: Modules.Attendance });
+    const { getData, tableData, loading, sortableKeys } = useTableData({ module: Modules.Attendance });
     const [pagination, setPagination] = useState({ page: 1, pageSize: 50, totalPages: 0, totalElements: 0 })
+    // Every row is already loaded here, so sorting happens in the browser without refetching
+    const { sort, order, orderBy, createSortHandler, withSortableColumns } = useTableSort({ onSortChange: () => setPagination((prev) => ({ ...prev, page: 1 })) })
     const { schoolName, school, selectedDate, attendanceMode } = urlParameters;
     const { getFilters, areAllSelected } = useCheckFilters({ filters: (dataStoreData?.filters?.dataElements ?? []) as unknown as any })
     const [filterState, setFilterState] = useState<{ dataElements: any[], attributes: any[] }>({ attributes: [], dataElements: [] });
@@ -89,8 +91,8 @@ export default function Attendance({ i18n, baseUrl }: { i18n: D2I18n, baseUrl: s
         }
 
         setPagination((prev) => ({ ...prev, totalPages: Math.ceil(tableData?.data?.length / pagination.pageSize), totalElements: tableData?.data?.length }))
-        setTableValues(formatData([...(copy?.length > 0 ? copy : tableData?.data)]?.slice(start, end), attendanceHeaders))
-    }, [tableData, reorganizeData, attendanceMode, seeReason, pagination.page])
+        setTableValues(formatData([...(copy?.length > 0 ? copy : sortTableRows(tableData?.data ?? [], sort, program as any))]?.slice(start, end), attendanceHeaders))
+    }, [tableData, reorganizeData, attendanceMode, seeReason, pagination.page, sort])
 
 
     return (
@@ -104,11 +106,15 @@ export default function Attendance({ i18n, baseUrl }: { i18n: D2I18n, baseUrl: s
                             programConfig={program as unknown as any}
                             title={i18n.t('Attendance')}
                             viewPortWidth={viewPortWidth}
-                            columns={[
+                            columns={withSortableColumns([
                                 ...(columns ?? []).filter((x: any) => x.visible && x.type !== VariablesTypes.DataElement),
                                 ...(columns ?? []).filter((x: any) => dataStoreData?.filters?.dataElements?.some((y: any) => y.dataElement == x.id)),
                                 ...(Array.isArray(attendanceHeaders) ? attendanceHeaders : []),
-                            ]}
+                            ], sortableKeys)}
+                            sortable
+                            order={order}
+                            orderBy={orderBy}
+                            createSortHandler={createSortHandler}
                             selected={selected}
                             setSelected={setSelected}
                             selectable={selectable}
