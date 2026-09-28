@@ -102,7 +102,7 @@ export default function Attendance({ i18n, baseUrl }: { i18n: D2I18n, baseUrl: s
                     <>
                         <Table
                             programConfig={program as unknown as any}
-                            title={i18n.t('Attendance title')}
+                            title={i18n.t('Attendance')}
                             viewPortWidth={viewPortWidth}
                             columns={[
                                 ...(columns ?? []).filter((x: any) => x.visible && x.type !== VariablesTypes.DataElement),
