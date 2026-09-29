@@ -1,4 +1,4 @@
-import { useCheckFilters, useShowAlerts, useUploadEvents, useUrlParams } from "dhis2-semis-functions";
+import { useCheckFilters, useShowAlerts, useUploadEvents, useUrlParams, formatTrackerError } from "dhis2-semis-functions";
 import useGetSelectedKeys from "../config/useGetSelectedKeys"
 import { useSchoolCalendarKey } from "dhis2-semis-components";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -13,7 +13,7 @@ export function useAttendanceCompleteness() {
     const { school, academicYear, selectedDate } = urlParameters;
     const { getUrlParamsAsObject } = useCheckFilters({ filters: (dataStoreData?.filters?.dataElements ?? []) as unknown as any })
     const { uploadValues } = useUploadEvents()
-    const { hide, show } = useShowAlerts()
+    const { show } = useShowAlerts()
     const savedAttendanceEvent = useRecoilValue(classAttendanceEvent)
 
     const completeOrDelete = async (operation: 'delete' | 'create', completed?: boolean) => {
@@ -43,14 +43,14 @@ export function useAttendanceCompleteness() {
             occurredAt: selectedDate
         }
 
-        await uploadValues({ events: [eventData] }, 'COMMIT', importStrategy)
+        await uploadValues({ events: [eventData] }, 'COMMIT', importStrategy, { silent: true })
             .then((resp: any) => {
                 if (resp?.validationReport?.errorReports?.length > 0) {
+                    // Show the server's reason (e.g. a validation rule) instead of a generic error
                     show({
-                        message: `${("Occurred unknown error!")}`,
-                        type: { critical: true }
+                        message: `${("Could not save attendance")}: ${formatTrackerError(resp)}`,
+                        type: { critical: true, duration: 15000 }
                     });
-                    setTimeout(hide, 5000);
                 }
             }).finally(() => setCompletenessLoading((prev: any) => ({ ...prev, refetch: !prev?.refetch })))
 
