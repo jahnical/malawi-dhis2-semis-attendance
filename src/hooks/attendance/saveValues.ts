@@ -33,7 +33,7 @@ export function useSaveValues({ setLoading, dataStoreData, setRefetch, setSelect
         
         await uploadValues({ events: events }, 'COMMIT', 'CREATE_AND_UPDATE')
             .then(() => { disable(false); setLoading(false); setRefetch((prev: any) => (!prev)); setOpen(false); setSelected([]) })
-            .catch(() => { setLoading(false); setOpen(false); disable(false) })
+            .catch(() => { setLoading(false); disable(false) })
     }
 
     return { formSubmit }
