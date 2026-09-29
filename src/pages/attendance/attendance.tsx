@@ -5,7 +5,7 @@ import { TableDataRefetch, Modules } from "dhis2-semis-types"
 import { Table, useSchoolCalendarKey } from "dhis2-semis-components";
 import { ReasonOfAbsenseState } from '../../schema/attendance/disableAllBtns';
 import EnrollmentActionsButtons from "../../components/enrollmentButtons/EnrollmentActionsButtons";
-import { sortTableRows, useCheckFilters, useHeader, useTableData, useTableSort, useUrlParams, useViewPortWidth } from "dhis2-semis-functions";
+import { sortTableRows, useCheckFilters, useHeader, useSectionProfile, useTableData, useTableSort, useUrlParams, useViewPortWidth } from "dhis2-semis-functions";
 import { tableDataFormatter } from '../../utils/table/tableDataFormatter';
 import InfoPageHolder from '../info/infoPage';
 import { TableDataState } from '../../schema/table/tableDataSchema';
@@ -41,6 +41,9 @@ export default function Attendance({ i18n, baseUrl }: { i18n: D2I18n, baseUrl: s
     const { sort, order, orderBy, createSortHandler, withSortableColumns } = useTableSort({ onSortChange: () => setPagination((prev) => ({ ...prev, page: 1 })) })
     const { schoolName, school, selectedDate, attendanceMode } = urlParameters;
     const { getFilters, areAllSelected } = useCheckFilters({ filters: (dataStoreData?.filters?.dataElements ?? []) as unknown as any })
+    // Student attendance is taken per class; staff attendance lists everyone and filters are optional
+    const { attendanceRequiresAllFilters } = useSectionProfile()
+    const filtersReady = !attendanceRequiresAllFilters || areAllSelected()
     const [filterState, setFilterState] = useState<{ dataElements: any[], attributes: any[] }>({ attributes: [], dataElements: [] });
     const [selectedDates, setSelectedDates] = useState<{ occurredAfter: string, occurredBefore: string }>({ occurredAfter: "", occurredBefore: "" })
     const { columns } = useHeader({ dataStoreData, programConfigData: program as unknown as ProgramConfig, programStage: attendance?.programStage });
@@ -48,7 +51,7 @@ export default function Attendance({ i18n, baseUrl }: { i18n: D2I18n, baseUrl: s
     const setAll = useSetRecoilState(allStudents)
 
     useEffect(() => {
-        if (selectedDates?.occurredAfter && selectedDates?.occurredBefore && areAllSelected()) {
+        if (selectedDates?.occurredAfter && selectedDates?.occurredBefore && filtersReady) {
             void getData({
                 paging: false,
                 skipPaging: true,
@@ -98,7 +101,7 @@ export default function Attendance({ i18n, baseUrl }: { i18n: D2I18n, baseUrl: s
     return (
         <div style={{ height: "85vh" }}>
             {
-                !(Boolean(schoolName) && Boolean(school) && areAllSelected()) ?
+                !(Boolean(schoolName) && Boolean(school) && filtersReady) ?
                     <InfoPageHolder i18n={i18n} />
                     :
                     <>
