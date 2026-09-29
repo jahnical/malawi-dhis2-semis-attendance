@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { ButtonStrip, IconUserGroup16, IconAddCircle24 } from "@dhis2/ui";
 import styles from './enrollmentActionsButtons.module.css'
-import { useGetSectionTypeLabel, useUrlParams, unavailableSchoolDays, useShowAlerts, useCheckFilters, useIncrementDays } from 'dhis2-semis-functions';
+import { useGetSectionTypeLabel, useUrlParams, unavailableSchoolDays, useShowAlerts, useCheckFilters, useIncrementDays, getSectionLabels } from 'dhis2-semis-functions';
 import { Form } from "react-final-form";
 import { DataExporter, DataImporter, CustomDropdown as DropdownButton, DropDownCalendar } from 'dhis2-semis-components';
 import { getAttendanceDEHeaders } from '../../utils/common/getAttendanceDEHeaders';
@@ -18,6 +18,7 @@ function EnrollmentActionsButtons(props: EnrollmentButtonsProps) {
     const { dataStoreData, program: programData } = useGetSelectedKeys()
     const { urlParameters, add } = useUrlParams();
     const { sectionName } = useGetSectionTypeLabel();
+    const sectionLabels = getSectionLabels(sectionName, i18n);
     const { unavailableDays } = unavailableSchoolDays()
     const [editModeValue, setEditModeValue] = useState<any>("")
     const { school: orgUnit, academicYear, attendanceMode, selectedDate } = urlParameters;
@@ -39,8 +40,8 @@ function EnrollmentActionsButtons(props: EnrollmentButtonsProps) {
         {
             label: <DataImporter
                 baseURL={baseUrl}
-                label={i18n.t('Import {{section}} atendances', {
-                    section: `${i18n.t(sectionName)}s`,
+                label={i18n.t('Import {{section}} attendance', {
+                    section: sectionLabels.title,
                 })}
                 module='attendance'
                 onError={(e: any) => { showAlert(e) }}
@@ -63,8 +64,8 @@ function EnrollmentActionsButtons(props: EnrollmentButtonsProps) {
                 ]}
                 baseURL={baseUrl}
                 isSchoolDay={unavailableDays}
-                label={i18n.t('Export {{section}} atendances', {
-                    section: `${i18n.t(sectionName)}s`,
+                label={i18n.t('Export {{section}} attendance', {
+                    section: sectionLabels.title,
                 })}
                 module='attendance'
                 onError={(e: any) => { showAlert(e) }}

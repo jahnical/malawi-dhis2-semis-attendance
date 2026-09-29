@@ -2,7 +2,7 @@ import { SingleSelectField, SingleSelectOption } from '@dhis2/ui'
 import React, { useEffect, useState } from 'react'
 import { SingleSelectProps } from '../../types/singleSelect/singleSelectTypes';
 import { eventBody } from '../../utils/attendance/eventBody';
-import { useShowAlerts, useUploadEvents, useUrlParams } from 'dhis2-semis-functions';
+import { useShowAlerts, useUploadEvents, useUrlParams, formatTrackerError } from 'dhis2-semis-functions';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { TableDataState } from '../../schema/table/tableDataSchema';
 import { TableDataRefetch } from 'dhis2-semis-types';
@@ -14,7 +14,7 @@ import { useAttendanceCompleteness } from '../../hooks/attendance/attendanceComp
 function SingleSelect(props: SingleSelectProps) {
     const { options, status, disabled, ...rest } = props;
     const [selected, setSelected] = useState<any>("")
-    const { hide, show } = useShowAlerts()
+    const { show } = useShowAlerts()
     const [tableValues, setTableValues] = useRecoilState(TableDataState)
     const setRefetch = useSetRecoilState(TableDataRefetch);
     const { uploadValues } = useUploadEvents()
@@ -28,14 +28,14 @@ function SingleSelect(props: SingleSelectProps) {
     const onchangeValue = async (value: string) => {
         add('position', `${props?.de}${rest.tei}`)
 
-        await uploadValues({ events: [eventBody({ ...rest, date: selectedDate }, value)] }, 'COMMIT', 'CREATE_AND_UPDATE')
+        await uploadValues({ events: [eventBody({ ...rest, date: selectedDate }, value)] }, 'COMMIT', 'CREATE_AND_UPDATE', { silent: true })
             .then(async (resp: any) => {
                 if (resp?.validationReport?.errorReports?.length > 0) {
+                    // Show the server's reason (e.g. a validation rule) instead of a generic error
                     show({
-                        message: `${("Occurred unknown error!")}`,
-                        type: { critical: true }
+                        message: `${("Could not save attendance")}: ${formatTrackerError(resp)}`,
+                        type: { critical: true, duration: 15000 }
                     });
-                    setTimeout(hide, 5000);
                     remove('position')
                 } else {
 

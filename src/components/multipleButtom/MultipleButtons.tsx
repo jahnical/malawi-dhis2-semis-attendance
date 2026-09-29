@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./button.module.css";
 import classNames from "classnames";
 import { ButtonProps } from "../../types/MultipleBtns/MultipleButtonsTypes";
-import { useShowAlerts, useUploadEvents, useUrlParams } from "dhis2-semis-functions";
+import { useShowAlerts, useUploadEvents, useUrlParams, formatTrackerError } from "dhis2-semis-functions";
 import { eventBody } from "../../utils/attendance/eventBody";
 import { TableDataState } from "../../schema/table/tableDataSchema";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -15,7 +15,7 @@ import { useAttendanceCompleteness } from "../../hooks/attendance/attendanceComp
 export default function MultipleButtons(props: ButtonProps) {
     const { items, status, disabled, ...rest } = props;
     const [selected, setSelected] = useState<any>("")
-    const { hide, show } = useShowAlerts()
+    const { show } = useShowAlerts()
     const [tableValues, setTableValues] = useRecoilState(TableDataState)
     const setRefetch = useSetRecoilState(TableDataRefetch);
     const { uploadValues } = useUploadEvents()
@@ -30,14 +30,14 @@ export default function MultipleButtons(props: ButtonProps) {
         if (value !== status) {
             add('position', `${value}${rest.tei}`)
 
-            await uploadValues({ events: [eventBody({ ...rest, date: selectedDate }, value)] }, 'COMMIT', 'CREATE_AND_UPDATE')
+            await uploadValues({ events: [eventBody({ ...rest, date: selectedDate }, value)] }, 'COMMIT', 'CREATE_AND_UPDATE', { silent: true })
                 .then(async (resp: any) => {
                     if (resp?.validationReport?.errorReports?.length > 0) {
+                        // Show the server's reason (e.g. a validation rule) instead of a generic error
                         show({
-                            message: `${("Occurred unknown error!")}`,
-                            type: { critical: true }
+                            message: `${("Could not save attendance")}: ${formatTrackerError(resp)}`,
+                            type: { critical: true, duration: 15000 }
                         });
-                        setTimeout(hide, 5000);
                         remove('position')
                     } else {
 
