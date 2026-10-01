@@ -3,8 +3,8 @@
     "Complete attendance": "Complete attendance",
     "Mark all as": "Mark all as",
     "Warning": "Warning",
-    "Students will be affected": "Students will be affected",
-    "The chosen attendance status will be assigned to the selected students": "The chosen attendance status will be assigned to the selected students",
+    "Students will be affected": "Learners will be affected",
+    "The chosen attendance status will be assigned to the selected students": "The chosen attendance status will be assigned to the selected learners",
     "Attendance": "Attendance",
     "Bulk attendance": "Bulk attendance",
     "Unknown error": "Unknown error",
@@ -14,7 +14,7 @@
     "Take attendance": "Take attendance",
     "View attendance records": "View attendance records",
     "Please select all filters": "Please select all filters",
-    "All listed students will be affected": "All listed students will be affected",
+    "All listed students will be affected": "All listed learners will be affected",
     "Cancel": "Cancel",
     "Yes im sure": "Yes im sure",
     "Attendance title": "Attendance title",
@@ -24,5 +24,10 @@
     "SEMIS-Attendance": "SEMIS-Attendance",
     "Follow the instructions to proceed": "Follow the instructions to proceed",
     "Select the Organization unit you want to view data": "Select the Organization unit you want to view data",
-    "Use global filters(Class, Grade and Academic Year)": "Use global filters(Class, Grade and Academic Year)"
+    "Use global filters(Class, Grade and Academic Year)": "Use global filters(Class, Grade and Academic Year)",
+    "Learners will be affected": "Learners will be affected",
+    "The chosen attendance status will be assigned to the selected learners": "The chosen attendance status will be assigned to the selected learners",
+    "All listed learners will be affected": "All listed learners will be affected",
+    "SEMIS-Staff-Attendance": "SEMIS-Staff-Attendance",
+    "SEMIS-Learner-Attendance": "SEMIS-Learner-Attendance"
 }

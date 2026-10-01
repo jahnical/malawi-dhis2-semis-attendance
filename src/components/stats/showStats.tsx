@@ -22,15 +22,15 @@ export default function ShowStats({ stats, open, setOpen }: { setOpen: (args: bo
             handleClose={() => setOpen(!open)}
             children={
                 <div>
-                    <Tag positive icon={<IconCheckmarkCircle16 />}> Students promotion preview </Tag>
+                    <Tag positive icon={<IconCheckmarkCircle16 />}> Learners promotion preview </Tag>
 
                     <WithPadding />
                     <label className={styles.title}>Summary</label>
                     <WithPadding />
 
                     <ButtonStrip>
-                        <SummaryCard color="success" label="Promoted students" value={stats?.posted ?? 0} />
-                        <SummaryCard color="error" label="No promoted students" value={stats?.conflicts?.length ?? 0} />
+                        <SummaryCard color="success" label="Promoted learners" value={stats?.posted ?? 0} />
+                        <SummaryCard color="error" label="No promoted learners" value={stats?.conflicts?.length ?? 0} />
                     </ButtonStrip>
 
                     <WithPadding />
@@ -40,7 +40,7 @@ export default function ShowStats({ stats, open, setOpen }: { setOpen: (args: bo
                                 <Button small icon={<InfoOutlined />} onClick={() => setShowDetails(!showDetails)}>More details</Button>
                             </ButtonStrip>
                             <br />
-                            <span style={{ color: "red" }}>The following students were not promoted. They already exist on the selected academic year</span>
+                            <span style={{ color: "red" }}>The following learners were not promoted. They already exist on the selected academic year</span>
                         </>
                         : null}
                     <WithPadding />
@@ -66,7 +66,7 @@ export default function ShowStats({ stats, open, setOpen }: { setOpen: (args: bo
                     </ButtonStrip>
                 </ div>
             }
-            title="Students Promotion Summary"
+            title="Learners Promotion Summary"
         />
     )
 }

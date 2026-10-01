@@ -88,8 +88,8 @@ export default function AssignStatus({
             {
                 open && <ModalComponent
                     children={<WithPadding>
-                        <NoticeBox title={`${i18n.t('Warning')}! ${selected.length} ${i18n.t("Students will be affected")}`} warning>
-                            {i18n.t("The chosen attendance status will be assigned to the selected students")}
+                        <NoticeBox title={`${i18n.t('Warning')}! ${selected.length} ${i18n.t("Learners will be affected")}`} warning>
+                            {i18n.t("The chosen attendance status will be assigned to the selected learners")}
                         </NoticeBox>
                         <WithPadding />
                         <WithBorder type="all" >

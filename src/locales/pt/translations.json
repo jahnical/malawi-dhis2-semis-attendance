@@ -29,5 +29,12 @@
     "staff": "funcionário",
     "Select the Organization unit you want to view data": "Selecione a unidade organizacional que deseja visualizar os dados",
     "Use global filters(Class, Grade and Academic Year)": "Use os filtros globais (Turma, Grau e Ano Letivo)",
-    "Follow the instructions to proceed": "Siga as instruções para continuar"
+    "Follow the instructions to proceed": "Siga as instruções para continuar",
+    "You need to select learners first": "Você precisa selecionar os estudantes primeiro",
+    "It will assign the same attendance status to all visible learners in the table": "Isto atribuirá o mesmo estado de presença a todos os estudantes visíveis na tabela",
+    "Learners will be affected": "Os estudantes serão afetados",
+    "The chosen attendance status will be assigned to the selected learners": "O estado de presença escolhido será atribuído aos estudantes selecionados",
+    "All listed learners will be affected": "Todos os estudantes listados serão afetados",
+    "The present attendance status will be assigned to all learners": "O estado de presença atual será atribuído a todos os estudantes",
+    "learner": "estudante"
 }
