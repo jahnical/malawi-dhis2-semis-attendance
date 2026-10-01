@@ -8,8 +8,8 @@ export default function ConfirmModal({ open, setOpen, onSave, i18n, selectedOpti
         <ModalComponent
             children={
                 <div>
-                    <NoticeBox title={`${i18n.t('Warning')}! ${i18n.t("All listed students will be affected")}`} warning>
-                        {i18n.t(`The ${selectedOption.label} attendance status will be assigned to all students`)}!
+                    <NoticeBox title={`${i18n.t('Warning')}! ${i18n.t("All listed learners will be affected")}`} warning>
+                        {i18n.t(`The ${selectedOption.label} attendance status will be assigned to all learners`)}!
                     </NoticeBox>
 
                     <p style={{ margin: "25px 0" }}>{i18n.t(`Are you sure you want to mark all as ${selectedOption.label}?`)}!</p>

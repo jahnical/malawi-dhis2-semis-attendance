@@ -1,6 +1,6 @@
 import { InfoPage } from "dhis2-semis-components";
 import { D2I18n } from "dhis2-semis-types";
-import { getInfoInstructions, useSectionProfile } from "dhis2-semis-functions";
+import { useUrlParams, getInfoInstructions, useSectionProfile } from "dhis2-semis-functions";
 import useGetSelectedKeys from "../../hooks/config/useGetSelectedKeys";
 
 export default function InfoPageHolder({ i18n }: { i18n: D2I18n }) {
@@ -8,9 +8,10 @@ export default function InfoPageHolder({ i18n }: { i18n: D2I18n }) {
     // Student attendance is taken per class, so its filters are required; staff filters only narrow the list
     const { attendanceRequiresAllFilters } = useSectionProfile()
 
+    const { urlParameters: { sectionType } } = useUrlParams();
     return (
         <InfoPage
-            title={i18n.t("SEMIS-Attendance")}
+            title={sectionType === "staff" ? i18n.t("SEMIS-Staff-Attendance") : i18n.t("SEMIS-Learner-Attendance")}
             sections={[
                 {
                     sectionTitle: i18n.t("Follow the instructions to proceed"),
