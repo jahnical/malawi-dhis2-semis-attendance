@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { ButtonStrip, IconUserGroup16, IconAddCircle24 } from "@dhis2/ui";
 import styles from './enrollmentActionsButtons.module.css'
-import { useGetSectionTypeLabel, useUrlParams, unavailableSchoolDays, useShowAlerts, useCheckFilters, useIncrementDays, getSectionLabels } from 'dhis2-semis-functions';
+import { useGetSectionTypeLabel, useUrlParams, unavailableSchoolDays, useShowAlerts, useCheckFilters, useIncrementDays, getSectionLabels, calendarForAcademicYear, clampToAcademicYear } from 'dhis2-semis-functions';
 import { Form } from "react-final-form";
 import { DataExporter, DataImporter, CustomDropdown as DropdownButton, DropDownCalendar } from 'dhis2-semis-components';
 import { getAttendanceDEHeaders } from '../../utils/common/getAttendanceDEHeaders';
@@ -28,13 +28,15 @@ function EnrollmentActionsButtons(props: EnrollmentButtonsProps) {
     const { areAllSelected, getFilters } = useCheckFilters({ filters: (dataStoreData.filters.dataElements ?? []) as unknown as any })
     const { hide, show } = useShowAlerts()
     const { schoolCalendar, defaults, academicYear: academicYearId } = useSchoolCalendarKey()
-    const defaultAcademicYear = schoolCalendar?.find((x: any) => x?.academicYear?.code == defaults?.academicYear)
+    // Calendar of the academic year selected in the header; the current year's only when none is selected
+    const defaultAcademicYear = calendarForAcademicYear(schoolCalendar as any[], academicYear, defaults?.academicYear) as any
     const { getDate } = useIncrementDays()
     const showAlert = (error: any) => {
         show({ message: `${i18n.t('Unknown error')}: ${error}`, type: { critical: true } })
         setTimeout(hide, 5000);
     }
-    const start = new Date(viewModeValue?.selectedDate ?? selectedDate)
+    // A date outside the selected year (e.g. today while looking at 2018-2019) moves to that year's last day
+    const start = clampToAcademicYear(new Date(viewModeValue?.selectedDate ?? selectedDate ?? new Date()), defaultAcademicYear)
 
     const enrollmentOptions: any = [
         {
@@ -90,7 +92,7 @@ function EnrollmentActionsButtons(props: EnrollmentButtonsProps) {
             getValidDays(start, defaultAcademicYear)
             setSelectedDates((prev: any) => ({ occurredAfter: fiveDaysBefore, occurredBefore: getDate({ selectedDate: start }) }))
         }
-    }, [viewModeValue])
+    }, [viewModeValue, academicYear])
 
     useEffect(() => {
         if (editModeValue || attendanceMode == 'edit') {
